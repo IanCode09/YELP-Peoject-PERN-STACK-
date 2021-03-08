@@ -4,6 +4,7 @@ import { RestaurantsContext } from "../context/RestaurantContext";
 
 const RestaurantList = () => {
   const { restaurants, setRestaurants } = useContext(RestaurantsContext);
+  //console.log(restaurants);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,6 +21,20 @@ const RestaurantList = () => {
     fetchData();
   }, [setRestaurants]);
 
+  const handleDelete = async (id) => {
+    try {
+      await RestaurantFinder.delete(`/${id}`);
+
+      setRestaurants(
+        restaurants.filter((restaurant) => {
+          return restaurant.id !== id;
+        })
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className='list-group'>
       <table className='table'>
@@ -35,20 +50,27 @@ const RestaurantList = () => {
         </thead>
         <tbody>
           {restaurants &&
-            restaurants.map((restaurant) => (
-              <tr key={restaurant.id}>
-                <td>{restaurant.name}</td>
-                <td>{restaurant.location}</td>
-                <td>{"$".repeat(restaurant.price_range)}</td>
-                <td>Reviews</td>
-                <td>
-                  <button className='btn btn-warning'>Update</button>
-                </td>
-                <td>
-                  <button className='btn btn-danger'>Delete</button>
-                </td>
-              </tr>
-            ))}
+            restaurants.map((restaurant) => {
+              return (
+                <tr key={restaurant.id}>
+                  <td>{restaurant.name}</td>
+                  <td>{restaurant.location}</td>
+                  <td>{"$".repeat(restaurant.price_range)}</td>
+                  <td>Reviews</td>
+                  <td>
+                    <button className='btn btn-warning'>Update</button>
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => handleDelete(restaurant.id)}
+                      className='btn btn-danger'
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
     </div>

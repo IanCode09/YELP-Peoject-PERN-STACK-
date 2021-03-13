@@ -1,10 +1,11 @@
 import React, { useContext, useEffect } from "react";
+import { useHistory } from "react-router";
 import RestaurantFinder from "../axiosApi/RestaurantFinder";
 import { RestaurantsContext } from "../context/RestaurantContext";
 
 const RestaurantList = () => {
   const { restaurants, setRestaurants } = useContext(RestaurantsContext);
-  //console.log(restaurants);
+  const history = useHistory();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,6 +36,10 @@ const RestaurantList = () => {
     }
   };
 
+  const handleUpdate = async (id) => {
+    history.push(`/restaurants/${id}/update`);
+  };
+
   return (
     <div className='list-group'>
       <table className='table'>
@@ -58,7 +63,12 @@ const RestaurantList = () => {
                   <td>{"$".repeat(restaurant.price_range)}</td>
                   <td>Reviews</td>
                   <td>
-                    <button className='btn btn-warning'>Update</button>
+                    <button
+                      onClick={() => handleUpdate(restaurant.id)}
+                      className='btn btn-warning'
+                    >
+                      Update
+                    </button>
                   </td>
                   <td>
                     <button
